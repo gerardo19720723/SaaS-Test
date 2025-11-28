@@ -1,0 +1,48 @@
+{
+  "name": "saas-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Backend de SaaS con Fastify y TypeScript",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "db:migrate": "tsx src/drizzle/migrate.ts"
+  },
+  "keywords": [
+    "saas",
+    "fastify",
+    "typescript"
+  ],
+  "author": "Tu nombre",
+  "license": "MIT",
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/cors": "^11.1.0",
+    "@fastify/helmet": "^13.0.2",
+    "@fastify/jwt": "^10.0.0",
+    "@fastify/rate-limit": "^10.3.0",
+    "@lucia-auth/adapter-postgresql": "^3.1.2",
+    "axios": "^1.13.2",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
+    "drizzle-kit": "^0.31.7",
+    "drizzle-orm": "^0.44.7",
+    "fastify": "^5.6.2",
+    "lucia": "^3.2.2",
+    "mercadopago": "^2.11.0",
+    "nodemailer": "^7.0.11",
+    "postgres": "^3.4.7",
+    "stripe": "^20.0.0",
+    "winston": "^3.18.3",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/node": "^24.10.1",
+    "@types/nodemailer": "^7.0.4",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
