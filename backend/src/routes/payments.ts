@@ -1,5 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
+import { requireRole, RequestWithAuth } from '../middleware/roleGuard';
+import { AuthUser } from '../utils/jwt';
 
 const paymentSchema = z.object({
   amount: z.number().positive(),
@@ -9,67 +11,55 @@ const paymentSchema = z.object({
 });
 
 export async function paymentRoutes(fastify: FastifyInstance) {
-  
-  // Crear pago
-  fastify.post('/create', async (request, reply) => {
-  try {
-    console.log('🚀 Headers recibidos:', request.headers);
-    console.log('🔑 Authorization:', request.headers.authorization);
-    console.log('👤 User:', request.user);
-    
-    // Obtener usuario (fake o real)
-    const userId = request.user?.userId || 'fake-user-id';
-    console.log('👤 User ID usado:', userId);
-    
-    const { amount, currency, provider, description } = paymentSchema.parse(request.body);
-    
-    console.log('💳 Creando pago:', { amount, currency, provider, description, userId });
-    
-    // Crear pago fake
-    const payment = {
-      id: 'pay_' + Date.now(),
-      userId,
-      amount,
-      currency,
-      provider,
-      description,
-      status: 'pending',
-      checkoutUrl: `https://fake-checkout-${provider}.com/pay_${Date.now()}`,
-      createdAt: new Date(),
-    };
-    
-    console.log('✅ Pago creado:', payment);
-    
-    reply.code(201).send({
-      message: 'Pago creado exitosamente',
-      payment: payment
-    });
-    
-  } catch (error) {
-    console.log('❌ Error creando pago:', error);
-    reply.code(400).send({ error: 'Error al crear el pago' });
-  }
-});
-
-  // Obtener historial de pagos
-  fastify.get('/history', async (request, reply) => {
+  /* crear pago */
+  fastify.post('/create', {
+    preHandler: [requireRole(['owner', 'admin_bar', 'customer'])],
+  }, async (req: RequestWithAuth, reply) => {
     try {
-      const { userId } = request.user as { userId: string };
-      
-      // Simular historial
+      const { amount, currency, provider, description } = paymentSchema.parse(req.body);
+      const user = req.authUser as AuthUser; // authUser existe gracias al cast
+
+      const payment = {
+        id: `pay_${Date.now()}`,
+        userId: user.id,
+        businessId: user.businessId,
+        amount,
+        currency,
+        provider,
+        description,
+        status: 'pending',
+        checkoutUrl: `https://fake-checkout-${provider}.com/pay_${Date.now()}`,
+        createdAt: new Date(),
+      };
+
+      reply.code(201).send({ message: 'Pago creado exitosamente', payment });
+    } catch (error) {
+      fastify.log.error(error);
+      reply.code(400).send({ error: 'Error al crear el pago' });
+    }
+  });
+
+  /* historial */
+  fastify.get('/history', {
+    preHandler: [requireRole(['owner', 'admin_bar', 'customer'])],
+  }, async (req: RequestWithAuth, reply) => {
+    try {
+      const user = req.authUser as AuthUser;
+
       const history = [
         {
           id: 'pay_123',
+          userId: user.id,
           amount: 1000,
           currency: 'ARS',
           provider: 'stripe',
           status: 'completed',
-          createdAt: new Date()
-        }
+          createdAt: new Date(),
+        },
       ];
-      
       reply.send({ payments: history });
     } catch (error) {
+      fastify.log.error(error);
       reply.code(500).send({ error: 'Error al obtener historial' });
     }
   });

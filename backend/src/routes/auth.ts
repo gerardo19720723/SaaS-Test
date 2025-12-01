@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
+import { db } from '../drizzle/db';
 
 const registerSchema = z.object({
   email: z.string().email(),

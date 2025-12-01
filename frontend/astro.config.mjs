@@ -7,5 +7,9 @@ export default defineConfig({
   adapter: node({
     mode: 'standalone'
   }),
-  integrations: [svelte()]
+  integrations: [svelte()],
+  server: {
+    host: '0.0.0.0',   // escucha en todas las interfaces
+    port: 3000
+  }
 });
