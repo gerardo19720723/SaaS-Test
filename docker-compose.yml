@@ -28,7 +28,7 @@ services:
       DATABASE_URL: postgresql://saas_user:saas_password@postgres:5432/saas_test
       REDIS_URL: redis://redis:6379
     ports:
-      - "3000:3000"
+      - "3002:3000"
     volumes:
       - ./backend:/app
       - /app/node_modules

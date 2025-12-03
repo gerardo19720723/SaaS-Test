@@ -9,6 +9,7 @@ export function requireRole(allowed) {
             const payload = verifyJWT(token);
             if (!allowed.includes(payload.role))
                 return reply.code(403).send({ error: 'Rol no permitido' });
+            /* usamos authUser en lugar de user */
             req.authUser = payload;
         }
         catch {

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { requireRole } from '../middleware/roleGuard';
 const paymentSchema = z.object({
     amount: z.number().positive(),
     currency: z.enum(['ARS', 'USD', 'BRL']),
@@ -6,21 +7,17 @@ const paymentSchema = z.object({
     description: z.string().min(1),
 });
 export async function paymentRoutes(fastify) {
-    // Crear pago
-    fastify.post('/create', async (request, reply) => {
+    /* crear pago */
+    fastify.post('/create', {
+        preHandler: [requireRole(['owner', 'admin_bar', 'customer'])],
+    }, async (req, reply) => {
         try {
-            console.log('🚀 Headers recibidos:', request.headers);
-            console.log('🔑 Authorization:', request.headers.authorization);
-            console.log('👤 User:', request.user);
-            // Obtener usuario (fake o real)
-            const userId = request.user?.userId || 'fake-user-id';
-            console.log('👤 User ID usado:', userId);
-            const { amount, currency, provider, description } = paymentSchema.parse(request.body);
-            console.log('💳 Creando pago:', { amount, currency, provider, description, userId });
-            // Crear pago fake
+            const { amount, currency, provider, description } = paymentSchema.parse(req.body);
+            const user = req.authUser; // authUser existe gracias al cast
             const payment = {
-                id: 'pay_' + Date.now(),
-                userId,
+                id: `pay_${Date.now()}`,
+                userId: user.id,
+                businessId: user.businessId,
                 amount,
                 currency,
                 provider,
@@ -29,35 +26,34 @@ export async function paymentRoutes(fastify) {
                 checkoutUrl: `https://fake-checkout-${provider}.com/pay_${Date.now()}`,
                 createdAt: new Date(),
             };
-            console.log('✅ Pago creado:', payment);
-            reply.code(201).send({
-                message: 'Pago creado exitosamente',
-                payment: payment
-            });
+            reply.code(201).send({ message: 'Pago creado exitosamente', payment });
         }
         catch (error) {
-            console.log('❌ Error creando pago:', error);
+            fastify.log.error(error);
             reply.code(400).send({ error: 'Error al crear el pago' });
         }
     });
-    // Obtener historial de pagos
-    fastify.get('/history', async (request, reply) => {
+    /* historial */
+    fastify.get('/history', {
+        preHandler: [requireRole(['owner', 'admin_bar', 'customer'])],
+    }, async (req, reply) => {
         try {
-            const { userId } = request.user;
-            // Simular historial
+            const user = req.authUser;
             const history = [
                 {
                     id: 'pay_123',
+                    userId: user.id,
                     amount: 1000,
                     currency: 'ARS',
                     provider: 'stripe',
                     status: 'completed',
-                    createdAt: new Date()
-                }
+                    createdAt: new Date(),
+                },
             ];
             reply.send({ payments: history });
         }
         catch (error) {
+            fastify.log.error(error);
             reply.code(500).send({ error: 'Error al obtener historial' });
         }
     });

@@ -10,6 +10,6 @@ export default defineConfig({
   integrations: [svelte()],
   server: {
     host: '0.0.0.0',   // escucha en todas las interfaces
-    port: 3000
+    port: 3001
   }
 });

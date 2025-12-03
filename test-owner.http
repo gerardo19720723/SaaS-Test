@@ -1,0 +1,14 @@
+
+### Registrar nuevo owner
+POST http://localhost:3002/api/owner/register
+Content-Type: application/json
+
+{
+  "email": "new5@owner.com",
+  "password": "123456",
+  "name": "Nuevo Owner"
+}
+
+### Listar owners (solo admin)
+GET http://localhost:3002/api/admin/owners
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjczNjI2YzdiLTc2OTMtNDNiNi1iYjA2LWMxZTMwNWU5NGI3MCIsInJvbGUiOiJvd25lciIsIm93bmVySWQiOiI3MzYyNmM3Yi03NjkzLTQzYjYtYmIwNi1jMWUzMDVlOTRiNzAiLCJpYXQiOjE3NjQ3Mzg1MzF9.QtAk0NLAuoY2jLO0imK0OdptnT-NNJVkkdvz5u2Iq8g

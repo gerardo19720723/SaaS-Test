@@ -7,6 +7,7 @@ import cookie from '@fastify/cookie';
 import dotenv from 'dotenv';
 import { routes } from './routes/index.js';
 import { logger } from './utils/logger.js';
+import { adminOwnersRoutes } from './routes/admin-owners.js';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ async function registerPlugins() {
       'http://127.0.0.1:4321', 
       'http://[::1]:4321',
       'http://localhost:3000',  // Para pruebas locales
+      'http://localhost:3001',
       null,  // Peticiones directas sin origin
       undefined
     ];
@@ -75,4 +77,5 @@ async function main() {
   }
 }
 
-main();
+main();// Wed Dec  3 13:06:35 CST 2025
+// Wed Dec  3 13:19:06 CST 2025

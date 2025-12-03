@@ -7,7 +7,7 @@
   let loading = false;
   let message = '';
   
-  const API_URL = 'http://localhost:3000/api';
+  const API_URL = 'http://localhost:3002/api';
   
   async function createPayment() {
     loading = true;

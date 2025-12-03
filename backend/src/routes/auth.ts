@@ -2,6 +2,8 @@ import { FastifyInstance } from 'fastify';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
 import { db } from '../drizzle/db';
+import { eq } from 'drizzle-orm';
+import { owners } from '../drizzle/schema-multi-level';
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -41,25 +43,29 @@ export async function authRoutes(fastify: FastifyInstance) {
   });
 
   // Inicio de sesión
-  fastify.post('/login', async (request, reply) => {
-    try {
-      const { email, password } = loginSchema.parse(request.body);
-      
-      // Aquí iría la lógica de autenticación
-      // Por ahora, simulamos éxito
-      
-      reply.send({
-        message: 'Inicio de sesión exitoso',
-        token: 'fake-jwt-token',
-        user: {
-          email,
-          name: email.split('@')[0],
-        },
-      });
-    } catch (error) {
-      reply.code(400).send({ error: 'Error en el inicio de sesión' });
-    }
-  });
+ fastify.post('/login', async (request, reply) => {
+  try {
+    const { email, password } = loginSchema.parse(request.body);
+
+    // Buscar usuario real
+    const [user] = await db.select().from(owners).where(eq(owners.email, email));
+    if (!user) return reply.code(401).send({ error: 'Credenciales inválidas' });
+
+    const ok = await bcrypt.compare(password, user.password);
+    if (!ok) return reply.code(401).send({ error: 'Credenciales inválidas' });
+
+    // Firmar JWT real
+    const token = fastify.jwt.sign({ id: user.id, role: 'owner', ownerId: user.id });
+    return {
+      message: 'Inicio de sesión exitoso',
+      token,
+      user: { id: user.id, email: user.email, role: 'owner' },
+    };
+  } catch (e) {
+    fastify.log.error(e);
+    return reply.code(400).send({ error: 'Error en login' });
+  }
+});
 
   // Cierre de sesión
   fastify.post('/logout', async (request, reply) => {

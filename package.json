@@ -18,6 +18,8 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "typescript": "^5.3.3"
+    "nodemon": "^3.1.11",
+    "tsc-watch": "^7.2.0",
+    "typescript": "^5.9.3"
   }
 }

@@ -8,7 +8,7 @@
   let loading = false;
   let isLogin = true;
   
-  const API_URL = 'http://localhost:3000/api';
+  const API_URL = 'http://localhost:3002/api';
   
   async function handleSubmit() {
     loading = true;

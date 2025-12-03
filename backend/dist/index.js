@@ -19,6 +19,7 @@ async function registerPlugins() {
                 'http://127.0.0.1:4321',
                 'http://[::1]:4321',
                 'http://localhost:3000', // Para pruebas locales
+                'http://localhost:3001',
                 null, // Peticiones directas sin origin
                 undefined
             ];
