@@ -153,7 +153,7 @@ await db.insert(schema.businesses).values({
 
     await db.insert(schema.loyaltyLevels).values([
       {
-        businessId: '00000000-0000-0000-0000-000000000000',
+        businessId: 'ae387908-8e35-4103-ba3c-9a2fe3fcd816',
         name: 'bronze',
         minPoints: 0,
         maxPoints: 999,
@@ -162,7 +162,7 @@ await db.insert(schema.businesses).values({
         color: '#CD7F32'
       },
       {
-        businessId: '00000000-0000-0000-0000-000000000000',
+        businessId: 'ae387908-8e35-4103-ba3c-9a2fe3fcd816',
         name: 'silver',
         minPoints: 1000,
         maxPoints: 4999,
@@ -171,7 +171,7 @@ await db.insert(schema.businesses).values({
         color: '#C0C0C0'
       },
       {
-        businessId: '00000000-0000-0000-0000-000000000000',
+        businessId: 'ae387908-8e35-4103-ba3c-9a2fe3fcd816',
         name: 'gold',
         minPoints: 5000,
         maxPoints: 999999,

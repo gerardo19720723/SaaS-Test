@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, timestamp, integer, numeric } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, timestamp, integer, numeric, } from 'drizzle-orm/pg-core';
 
 export const owners = pgTable('owners', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -73,29 +73,45 @@ export const tables = pgTable('tables', {
   createdAt: timestamp('created_at').defaultNow(),
 });
 
-export const loyaltyLevels = pgTable('loyalty_levels', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  businessId: uuid('business_id').references(() => businesses.id),
-  name: varchar('name', { length: 50 }).notNull(),
-  minPoints: integer('min_points').notNull(),
-  maxPoints: integer('max_points').notNull(),
-  discountPercentage: numeric('discount_percentage', { precision: 5, scale: 2 }).notNull(),
-  benefits: text('benefits'),
-  color: varchar('color', { length: 7 }),
-  createdAt: timestamp('created_at').defaultNow(),
+export const loyaltyLevels = pgTable("loyalty_levels", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  businessId: uuid("business_id").references(() => businesses.id),
+  name: varchar("name", { length: 100 }).notNull(),
+  minPoints: integer("min_points").default(0).notNull(),
+  maxPoints: integer("max_points").default(0).notNull(),
+  discountPercentage: varchar("discount_percentage", { length: 10 }),
+  benefits: varchar("benefits", { length: 255 }),
+  color: varchar("color", { length: 50 }),
+  status: varchar("status", { length: 50 }).default("active"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const customers = pgTable('customers', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  businessId: uuid('business_id').references(() => businesses.id),
-  loyaltyLevelId: uuid('loyalty_level_id').references(() => loyaltyLevels.id),
-  email: varchar('email', { length: 255 }).notNull().unique(),
-  phone: varchar('phone', { length: 50 }),
-  name: varchar('name', { length: 255 }).notNull(),
-  points: integer('points').default(0),
-  totalSpent: numeric('total_spent', { precision: 12, scale: 2 }).default('0'),
-  visitCount: integer('visit_count').default(0),
-  status: varchar('status', { length: 50 }).default('active'),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+
+export const customers = pgTable("customers", {
+  id: uuid("id").primaryKey().defaultRandom(),
+
+  // Relación con negocio
+  businessId: uuid("business_id").references(() => businesses.id),
+
+  // Relación con niveles de lealtad (puede ser opcional)
+  loyaltyLevelId: uuid("loyalty_level_id").references(() => loyaltyLevels.id),
+
+  // Datos básicos
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  phone: varchar("phone", { length: 20 }),
+  name: varchar("name", { length: 255 }).notNull(),
+
+  // Métricas del cliente
+  points: integer("points").default(0).notNull(),
+  totalSpent: integer("total_spent").default(0).notNull(),
+  visitCount: integer("visit_count").default(0).notNull(),
+
+  // Estado
+  status: varchar("status", { length: 50 }).default("active"),
+
+  // Timestamps
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
+

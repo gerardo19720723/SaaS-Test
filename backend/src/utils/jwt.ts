@@ -1,16 +1,20 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET!;
-
 export interface AuthUser {
   id: string;
-  role: 'owner' | 'admin_bar' | 'staff' | 'customer';
-  businessId?: string;
+  email: string;
+  role: 'owner' | 'admin' | 'staff' | 'customer';
   ownerId?: string;
+  businessId?: string;
+
 }
 
-export const signJWT = (payload: AuthUser): string =>
-  jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+const secret = process.env.JWT_SECRET || 'supersecret';
 
-export const verifyJWT = (token: string): AuthUser =>
-  jwt.verify(token, JWT_SECRET) as AuthUser;
+export function signJWT(payload: AuthUser) {
+  return jwt.sign(payload, secret, { expiresIn: '1h' });
+}
+
+export function verifyJWT(token: string): AuthUser {
+  return jwt.verify(token, secret) as AuthUser;
+}

@@ -1,15 +1,18 @@
-import { z } from 'zod';
-import { requireRole } from '../middleware/roleGuard.js';
-const paymentSchema = z.object({
-    amount: z.number().positive(),
-    currency: z.enum(['MXN', 'USD']),
-    provider: z.enum(['stripe', 'mercadopago', 'todopago']),
-    description: z.string().min(1),
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.paymentRoutes = paymentRoutes;
+const zod_1 = require("zod");
+const roleGuard_js_1 = require("../middleware/roleGuard.js");
+const paymentSchema = zod_1.z.object({
+    amount: zod_1.z.number().positive(),
+    currency: zod_1.z.enum(['MXN', 'USD']),
+    provider: zod_1.z.enum(['stripe', 'mercadopago', 'todopago']),
+    description: zod_1.z.string().min(1),
 });
-export async function paymentRoutes(fastify) {
+async function paymentRoutes(fastify) {
     /* crear pago */
     fastify.post('/create', {
-        preHandler: [requireRole(['owner', 'admin_bar', 'customer'])],
+        preHandler: [(0, roleGuard_js_1.requireRole)(['owner', 'admin', 'customer'])],
     }, async (req, reply) => {
         try {
             const { amount, currency, provider, description } = paymentSchema.parse(req.body);
@@ -35,7 +38,7 @@ export async function paymentRoutes(fastify) {
     });
     /* historial */
     fastify.get('/history', {
-        preHandler: [requireRole(['owner', 'admin_bar', 'customer'])],
+        preHandler: [(0, roleGuard_js_1.requireRole)(['owner', 'admin', 'customer'])],
     }, async (req, reply) => {
         try {
             const user = req.authUser;

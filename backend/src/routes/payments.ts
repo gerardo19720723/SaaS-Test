@@ -13,7 +13,7 @@ const paymentSchema = z.object({
 export async function paymentRoutes(fastify: FastifyInstance) {
   /* crear pago */
   fastify.post('/create', {
-    preHandler: [requireRole(['owner', 'admin_bar', 'customer'])],
+    preHandler: [requireRole(['owner', 'admin', 'customer'])],
   }, async (req: RequestWithAuth, reply) => {
     try {
       const { amount, currency, provider, description } = paymentSchema.parse(req.body);
@@ -41,7 +41,7 @@ export async function paymentRoutes(fastify: FastifyInstance) {
 
   /* historial */
   fastify.get('/history', {
-    preHandler: [requireRole(['owner', 'admin_bar', 'customer'])],
+    preHandler: [requireRole(['owner', 'admin', 'customer'])],
   }, async (req: RequestWithAuth, reply) => {
     try {
       const user = req.authUser as AuthUser;

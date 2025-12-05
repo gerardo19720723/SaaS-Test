@@ -1,0 +1,25 @@
+### Crear nivel de lealtad
+POST http://localhost:3003/api/businesses/ae387908-8e35-4103-ba3c-9a2fe3fcd816/loyalty-levels
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImVtYWlsIjoib3duZXJzQGV4YW1wbGUuY29tIiwicm9sZSI6Im93bmVyIiwib3duZXJJZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImlhdCI6MTc2NDkxMzAwMSwiZXhwIjoxNzY0OTE2NjAxfQ.hHmjXA3fO5nfje7P0hkjsPNJr6QRZGBWHk4rwH41yW4
+Content-Type: application/json
+
+{
+  "name": "Gold",
+  "minPoints": 1000,
+  "discountRate": 15
+}
+
+### Crear otro nivel de lealtad
+POST http://localhost:3003/api/businesses/ae387908-8e35-4103-ba3c-9a2fe3fcd816/loyalty-levels
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImVtYWlsIjoib3duZXJzQGV4YW1wbGUuY29tIiwicm9sZSI6Im93bmVyIiwib3duZXJJZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImlhdCI6MTc2NDkxMzAwMSwiZXhwIjoxNzY0OTE2NjAxfQ.hHmjXA3fO5nfje7P0hkjsPNJr6QRZGBWHk4rwH41yW4
+Content-Type: application/json
+
+{
+  "name": "Silver",
+  "minPoints": 500,
+  "discountRate": 10
+}
+
+### Listar niveles de lealtad de un negocio
+GET http://localhost:3003/api/businesses/ae387908-8e35-4103-ba3c-9a2fe3fcd816/loyalty-levels
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImVtYWlsIjoib3duZXJzQGV4YW1wbGUuY29tIiwicm9sZSI6Im93bmVyIiwib3duZXJJZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImlhdCI6MTc2NDkxMzAwMSwiZXhwIjoxNzY0OTE2NjAxfQ.hHmjXA3fO5nfje7P0hkjsPNJr6QRZGBWHk4rwH41yW4

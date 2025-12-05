@@ -1,13 +1,51 @@
-import { db } from '../drizzle/db.js'; // única instancia centralizada
-import * as schema from '../drizzle/schema-multi-level.js';
-import dotenv from 'dotenv';
-import bcrypt from 'bcrypt';
-dotenv.config();
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const db_js_1 = require("../drizzle/db.js"); // única instancia centralizada
+const schema = __importStar(require("../drizzle/schema-multi-level.js"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+dotenv_1.default.config();
 async function migrateMultiLevel() {
     try {
         console.log('🚀 Creando tablas multi-nivel...');
         /* ---------- owners ---------- */
-        await db.execute(`
+        await db_js_1.db.execute(`
       CREATE TABLE IF NOT EXISTS owners (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         email VARCHAR(255) NOT NULL UNIQUE,
@@ -20,7 +58,7 @@ async function migrateMultiLevel() {
       )
     `);
         /* ---------- businesses ---------- */
-        await db.execute(`
+        await db_js_1.db.execute(`
       CREATE TABLE IF NOT EXISTS businesses (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         owner_id UUID REFERENCES owners(id),
@@ -40,7 +78,7 @@ async function migrateMultiLevel() {
       )
     `);
         /* ---------- admin_bars ---------- */
-        await db.execute(`
+        await db_js_1.db.execute(`
       CREATE TABLE IF NOT EXISTS admin_bars (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         business_id UUID REFERENCES businesses(id),
@@ -54,7 +92,7 @@ async function migrateMultiLevel() {
       )
     `);
         /* ---------- departments ---------- */
-        await db.execute(`
+        await db_js_1.db.execute(`
       CREATE TABLE IF NOT EXISTS departments (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         business_id UUID REFERENCES businesses(id),
@@ -64,7 +102,7 @@ async function migrateMultiLevel() {
       )
     `);
         /* ---------- staff ---------- */
-        await db.execute(`
+        await db_js_1.db.execute(`
       CREATE TABLE IF NOT EXISTS staff (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         department_id UUID REFERENCES departments(id),
@@ -80,7 +118,7 @@ async function migrateMultiLevel() {
       )
     `);
         /* ---------- tables ---------- */
-        await db.execute(`
+        await db_js_1.db.execute(`
       CREATE TABLE IF NOT EXISTS tables (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         business_id UUID REFERENCES businesses(id),
@@ -91,7 +129,7 @@ async function migrateMultiLevel() {
       )
     `);
         /* ---------- loyalty_levels ---------- */
-        await db.execute(`
+        await db_js_1.db.execute(`
       CREATE TABLE IF NOT EXISTS loyalty_levels (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         business_id UUID REFERENCES businesses(id),
@@ -105,7 +143,7 @@ async function migrateMultiLevel() {
       )
     `);
         /* ---------- customers ---------- */
-        await db.execute(`
+        await db_js_1.db.execute(`
       CREATE TABLE IF NOT EXISTS customers (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         business_id UUID REFERENCES businesses(id),
@@ -122,13 +160,13 @@ async function migrateMultiLevel() {
       )
     `);
         /* ---------- inserts mínimos ---------- */
-        await db.insert(schema.owners).values({
+        await db_js_1.db.insert(schema.owners).values({
             email: 'system@localhost',
-            password: await bcrypt.hash('system', 12),
+            password: await bcrypt_1.default.hash('system', 12),
             name: 'Sistema',
             status: 'active',
         });
-        await db.insert(schema.businesses).values({
+        await db_js_1.db.insert(schema.businesses).values({
             ownerId: '00000000-0000-0000-0000-000000000000',
             name: 'Sistema',
             type: 'system',
@@ -138,9 +176,9 @@ async function migrateMultiLevel() {
             maxStaff: 999,
             maxEvents: 999,
         });
-        await db.insert(schema.loyaltyLevels).values([
+        await db_js_1.db.insert(schema.loyaltyLevels).values([
             {
-                businessId: '00000000-0000-0000-0000-000000000000',
+                businessId: 'ae387908-8e35-4103-ba3c-9a2fe3fcd816',
                 name: 'bronze',
                 minPoints: 0,
                 maxPoints: 999,
@@ -149,7 +187,7 @@ async function migrateMultiLevel() {
                 color: '#CD7F32'
             },
             {
-                businessId: '00000000-0000-0000-0000-000000000000',
+                businessId: 'ae387908-8e35-4103-ba3c-9a2fe3fcd816',
                 name: 'silver',
                 minPoints: 1000,
                 maxPoints: 4999,
@@ -158,7 +196,7 @@ async function migrateMultiLevel() {
                 color: '#C0C0C0'
             },
             {
-                businessId: '00000000-0000-0000-0000-000000000000',
+                businessId: 'ae387908-8e35-4103-ba3c-9a2fe3fcd816',
                 name: 'gold',
                 minPoints: 5000,
                 maxPoints: 999999,

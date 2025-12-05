@@ -1,24 +1,23 @@
-import { authRoutes } from './auth.js';
-import { paymentRoutes } from './payments.js';
-import { registerOwnerRoutes } from './register-owner.js';
-import { adminOwnersRoutes } from './admin-owners.js';
-export async function routes(fastify) {
-    // Rutas públicas (sin JWT)
-    await fastify.register(authRoutes, { prefix: '/api' });
-    await fastify.register(registerOwnerRoutes, { prefix: '/api' });
-    fastify.get('/api/health', async (_req, _reply) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.routes = routes;
+const auth_js_1 = require("./auth.js");
+const payments_js_1 = require("./payments.js");
+const register_owner_js_1 = require("./register-owner.js");
+const admin_owners_js_1 = require("./admin-owners.js");
+async function routes(fastify) {
+    // Rutas públicas
+    await fastify.register(auth_js_1.authRoutes, { prefix: '/api' });
+    await fastify.register(register_owner_js_1.registerOwnerRoutes, { prefix: '/api' });
+    fastify.get('/api/health', async () => {
         return { status: 'ok', timestamp: new Date().toISOString() };
     });
     // Rutas protegidas (con JWT)
     fastify.register(async function (fastify) {
         fastify.addHook('preHandler', async (request, reply) => {
-            // Aquí va tu hook JWT (validación de token)
+            // Aquí va tu validación JWT
         });
-        await fastify.register(adminOwnersRoutes, { prefix: '/api/admin' });
-        await fastify.register(paymentRoutes, { prefix: '/api/payments' });
-    });
-    // 👉 Imprimir todas las rutas registradas al iniciar
-    fastify.ready().then(() => {
-        console.log(fastify.printRoutes());
+        await fastify.register(admin_owners_js_1.adminOwnersRoutes, { prefix: '/api/admin' });
+        await fastify.register(payments_js_1.paymentRoutes, { prefix: '/api/payments' });
     });
 }

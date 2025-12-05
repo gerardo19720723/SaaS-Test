@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "target": "ESNext",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
+    "target": "ES2020",                  // Versión de JS que quieres generar
+    "module": "CommonJS",                // Para Node.js
+    "rootDir": "./src",                  // Carpeta de entrada (ahora tu server.ts está en src/)
+    "outDir": "./dist",                  // Carpeta de salida para los .js compilados
+    "strict": true,                      // Activa chequeos estrictos de tipos
+    "esModuleInterop": true,             // Permite importar módulos CommonJS con sintaxis ES
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "skipLibCheck": true,                // Evita errores en tipos de librerías externas
+    "moduleResolution": "node",          // Resolución de módulos estilo Node
+    "resolveJsonModule": true,           // Permite importar archivos .json
+    "types": ["node"]                    // Incluye definiciones de Node.js
   },
-  "include": ["src", "drizzle"]
+  "include": ["src"],                    // Compila todo lo que esté dentro de src/
+  "exclude": ["node_modules", "dist"]    // Ignora dependencias y salida
 }

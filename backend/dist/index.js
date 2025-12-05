@@ -1,16 +1,21 @@
-import Fastify from 'fastify';
-import cors from '@fastify/cors';
-import helmet from '@fastify/helmet';
-import rateLimit from '@fastify/rate-limit';
-import jwt from '@fastify/jwt';
-import cookie from '@fastify/cookie';
-import dotenv from 'dotenv';
-import { routes } from './routes/index.js';
-dotenv.config();
-const fastify = Fastify({ logger: true });
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const fastify_1 = __importDefault(require("fastify"));
+const cors_1 = __importDefault(require("@fastify/cors"));
+const helmet_1 = __importDefault(require("@fastify/helmet"));
+const rate_limit_1 = __importDefault(require("@fastify/rate-limit"));
+const jwt_1 = __importDefault(require("@fastify/jwt"));
+const cookie_1 = __importDefault(require("@fastify/cookie"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const index_js_1 = require("./routes/index.js");
+dotenv_1.default.config();
+const fastify = (0, fastify_1.default)({ logger: true });
 // ✅ REGISTRAR PLUGINS PRIMERO
 async function registerPlugins() {
-    await fastify.register(cors, {
+    await fastify.register(cors_1.default, {
         origin: (origin, callback) => {
             console.log('🌐 CORS request from:', origin);
             // ✅ Permitir todos estos orígenes de desarrollo
@@ -39,14 +44,14 @@ async function registerPlugins() {
         exposedHeaders: ['Content-Range', 'X-Content-Range'],
         maxAge: 86400 // 24 horas
     });
-    await fastify.register(helmet);
-    await fastify.register(rateLimit, { max: 100, timeWindow: '1 minute' });
-    await fastify.register(jwt, { secret: process.env.JWT_SECRET || 'tu_secreto_jwt' });
-    await fastify.register(cookie);
+    await fastify.register(helmet_1.default);
+    await fastify.register(rate_limit_1.default, { max: 100, timeWindow: '1 minute' });
+    await fastify.register(jwt_1.default, { secret: process.env.JWT_SECRET || 'tu_secreto_jwt' });
+    await fastify.register(cookie_1.default);
 }
 // ✅ REGISTRAR RUTAS DESPUÉS
 async function registerRoutes() {
-    await fastify.register(routes, { prefix: '/api' });
+    await fastify.register(index_js_1.routes, { prefix: '/api' });
     // Health check
     fastify.get('/health', async (request, reply) => {
         return { status: 'ok', timestamp: new Date().toISOString() };

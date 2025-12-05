@@ -1,0 +1,42 @@
+### Registro de usuario (ejemplo owner)
+POST http://127.0.0.1:3003/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "owners@example.com",
+  "password": "123456",
+  "name": "owners",
+  "pnone": "5555555555"
+}
+
+### Login de usuario
+POST http://localhost:3003/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "owners@example.com",
+  "password": "123456"
+}
+
+### Listar negocios del owner autenticado
+GET http://localhost:3003/api/businesses
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImVtYWlsIjoib3duZXJzQGV4YW1wbGUuY29tIiwicm9sZSI6Im93bmVyIiwib3duZXJJZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImlhdCI6MTc2NDkxMzAwMSwiZXhwIjoxNzY0OTE2NjAxfQ.hHmjXA3fO5nfje7P0hkjsPNJr6QRZGBWHk4rwH41yW4
+
+### Crear un nuevo negocio
+POST http://localhost:3003/api/businesses
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImVtYWlsIjoib3duZXJzQGV4YW1wbGUuY29tIiwicm9sZSI6Im93bmVyIiwib3duZXJJZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImlhdCI6MTc2NDkxMzAwMSwiZXhwIjoxNzY0OTE2NjAxfQ.hHmjXA3fO5nfje7P0hkjsPNJr6QRZGBWHk4rwH41yW4
+Content-Type: application/json
+
+{
+  "name": "Bar Copilot",
+  "type": "cocktail",
+  "address": "Av. Principal #123"
+}
+
+### Listar staff de un negocio
+GET http://localhost:3003/api/businesses/{{businessId}}/staff
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImVtYWlsIjoib3duZXJzQGV4YW1wbGUuY29tIiwicm9sZSI6Im93bmVyIiwib3duZXJJZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImlhdCI6MTc2NDkxMzAwMSwiZXhwIjoxNzY0OTE2NjAxfQ.hHmjXA3fO5nfje7P0hkjsPNJr6QRZGBWHk4rwH41yW4
+
+### Listar clientes de un negocio
+GET http://localhost:3003/api/businesses/{{businessId}}/customers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImVtYWlsIjoib3duZXJzQGV4YW1wbGUuY29tIiwicm9sZSI6Im93bmVyIiwib3duZXJJZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImlhdCI6MTc2NDkxMzAwMSwiZXhwIjoxNzY0OTE2NjAxfQ.hHmjXA3fO5nfje7P0hkjsPNJr6QRZGBWHk4rwH41yW4 

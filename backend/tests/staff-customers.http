@@ -1,0 +1,33 @@
+### Crear staff para un negocio
+POST http://localhost:3003/api/businesses/ae387908-8e35-4103-ba3c-9a2fe3fcd816/staff
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImVtYWlsIjoib3duZXJzQGV4YW1wbGUuY29tIiwicm9sZSI6Im93bmVyIiwib3duZXJJZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImlhdCI6MTc2NDkxMzAwMSwiZXhwIjoxNzY0OTE2NjAxfQ.hHmjXA3fO5nfje7P0hkjsPNJr6QRZGBWHk4rwH41yW4
+Content-Type: application/json
+
+{
+  "email": "staff1@example.com",
+  "password": "123456",
+  "name": "Juan Pérez",
+  "role": "bartender",
+  "pin": "4321"
+}
+
+### Listar staff del negocio
+GET http://localhost:3003/api/businesses/ae387908-8e35-4103-ba3c-9a2fe3fcd816/staff
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImVtYWlsIjoib3duZXJzQGV4YW1wbGUuY29tIiwicm9sZSI6Im93bmVyIiwib3duZXJJZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImlhdCI6MTc2NDkxMzAwMSwiZXhwIjoxNzY0OTE2NjAxfQ.hHmjXA3fO5nfje7P0hkjsPNJr6QRZGBWHk4rwH41yW4
+
+---
+
+### Crear cliente para un negocio
+POST http://localhost:3003/api/businesses/ae387908-8e35-4103-ba3c-9a2fe3fcd816/customers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImVtYWlsIjoib3duZXJzQGV4YW1wbGUuY29tIiwicm9sZSI6Im93bmVyIiwib3duZXJJZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImlhdCI6MTc2NDkxMzAwMSwiZXhwIjoxNzY0OTE2NjAxfQ.hHmjXA3fO5nfje7P0hkjsPNJr6QRZGBWHk4rwH41yW4
+Content-Type: application/json
+
+{
+  "email": "cliente2@example.com",
+  "phone": "555-1234",
+  "name": "María reyes"
+}
+
+### Listar clientes del negocio
+GET http://localhost:3003/api/businesses/ae387908-8e35-4103-ba3c-9a2fe3fcd816/customers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImVtYWlsIjoib3duZXJzQGV4YW1wbGUuY29tIiwicm9sZSI6Im93bmVyIiwib3duZXJJZCI6ImM3YjM1ZGQzLTFiZDAtNGE3ZC1hMTRjLWM1M2M1MjBlZGUzOSIsImlhdCI6MTc2NDkxMzAwMSwiZXhwIjoxNzY0OTE2NjAxfQ.hHmjXA3fO5nfje7P0hkjsPNJr6QRZGBWHk4rwH41yW4

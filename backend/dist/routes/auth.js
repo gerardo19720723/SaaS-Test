@@ -1,60 +1,99 @@
-import bcrypt from 'bcrypt';
-import { z, ZodError } from 'zod';
-import { db } from '../drizzle/db.js';
-import { eq } from 'drizzle-orm';
-import { owners } from '../drizzle/schema-multi-level.js';
-const loginSchema = z.object({
-    email: z.string().email(),
-    password: z.string().min(6),
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.authRoutes = authRoutes;
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const zod_1 = require("zod");
+const db_js_1 = require("../drizzle/db.js");
+const drizzle_orm_1 = require("drizzle-orm");
+const schema_multi_level_js_1 = require("../drizzle/schema-multi-level.js");
+const jwt_js_1 = require("../utils/jwt.js");
+// Esquema de validación para login
+const loginSchema = zod_1.z.object({
+    email: zod_1.z.string().email(),
+    password: zod_1.z.string().min(6),
 });
-export async function authRoutes(fastify) {
-    // Login
+// Esquema de validación para registro
+const registerSchema = zod_1.z.object({
+    email: zod_1.z.string().email(),
+    password: zod_1.z.string().min(6),
+    name: zod_1.z.string().min(2),
+    phone: zod_1.z.string().optional(),
+});
+async function authRoutes(fastify) {
+    // 🔑 LOGIN
     fastify.post('/auth/login', async (request, reply) => {
         try {
-            // 1. Validación del payload
             const { email, password } = loginSchema.parse(request.body);
-            fastify.log.info({ email, password }, 'Payload recibido en login');
-            // 2. Buscar owner en DB
-            const [user] = await db.select().from(owners).where(eq(owners.email, email));
-            fastify.log.info({ user }, 'Resultado de consulta en owners');
-            if (!user) {
-                fastify.log.warn(`Login fallido: no existe el email ${email}`);
+            // Buscar owner por email
+            const [user] = await db_js_1.db.select().from(schema_multi_level_js_1.owners).where((0, drizzle_orm_1.eq)(schema_multi_level_js_1.owners.email, email));
+            if (!user)
                 return reply.code(401).send({ error: 'Credenciales inválidas' });
-            }
-            // 3. Comparar contraseña
-            const ok = await bcrypt.compare(password, user.password);
-            fastify.log.info({ ok }, 'Resultado de bcrypt.compare');
-            if (!ok) {
-                fastify.log.warn(`Login fallido: contraseña incorrecta para ${email}`);
+            // Comparar contraseña
+            const ok = await bcrypt_1.default.compare(password, user.password);
+            if (!ok)
                 return reply.code(401).send({ error: 'Credenciales inválidas' });
-            }
-            // 4. Generar token
-            const token = fastify.jwt.sign({
+            // Generar token JWT
+            const token = (0, jwt_js_1.signJWT)({
                 id: user.id,
+                email: user.email,
                 role: 'owner',
                 ownerId: user.id,
             });
-            fastify.log.info({ token }, 'Token generado');
             return {
                 message: 'Inicio de sesión exitoso',
                 token,
                 user: { id: user.id, email: user.email, role: 'owner' },
             };
         }
-        catch (e) {
-            if (e instanceof ZodError) {
-                fastify.log.error({ issues: e.issues }, 'Error de validación en login');
-                return reply.code(400).send({
-                    error: 'Validación fallida',
-                    details: e.issues,
-                });
-            }
-            fastify.log.error(e, 'Error inesperado en login');
+        catch (err) {
+            fastify.log.error(err);
             return reply.code(400).send({ error: 'Error en login' });
         }
     });
-    // Logout
+    // 📝 REGISTRO
+    fastify.post('/auth/register', async (request, reply) => {
+        try {
+            const { email, password, name, phone } = registerSchema.parse(request.body);
+            // Verificar si ya existe
+            const [existing] = await db_js_1.db.select().from(schema_multi_level_js_1.owners).where((0, drizzle_orm_1.eq)(schema_multi_level_js_1.owners.email, email));
+            if (existing)
+                return reply.code(400).send({ error: 'Email ya registrado' });
+            // Hashear contraseña
+            const hashed = await bcrypt_1.default.hash(password, 12);
+            // Insertar nuevo owner
+            const [newOwner] = await db_js_1.db
+                .insert(schema_multi_level_js_1.owners)
+                .values({
+                email,
+                password: hashed,
+                name,
+                phone,
+                status: 'active',
+            })
+                .returning();
+            // Generar token
+            const token = (0, jwt_js_1.signJWT)({
+                id: newOwner.id,
+                email: newOwner.email,
+                role: 'owner',
+                ownerId: newOwner.id,
+            });
+            return {
+                message: 'Registro exitoso',
+                token,
+                user: { id: newOwner.id, email: newOwner.email, role: 'owner' },
+            };
+        }
+        catch (err) {
+            fastify.log.error(err);
+            return reply.code(400).send({ error: 'Error en registro' });
+        }
+    });
+    // 🚪 LOGOUT (ejemplo simple)
     fastify.post('/auth/logout', async (_req, reply) => {
-        reply.send({ message: 'Sesión cerrada exitosamente' });
+        return reply.send({ message: 'Sesión cerrada' });
     });
 }

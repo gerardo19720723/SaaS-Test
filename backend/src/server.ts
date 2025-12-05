@@ -1,29 +1,25 @@
 import Fastify from 'fastify';
 import fastifyJwt from '@fastify/jwt';
-import { routes } from './routes/index.js';
+import { adminRoutes } from './routes/admin.js';
+import { authRoutes } from './routes/auth.js';
+import { businessRoutes } from './routes/business.js';
+
+
+
 
 const fastify = Fastify({ logger: true });
 
-// Registrar JWT con tu secret
+// Registrar JWT
 fastify.register(fastifyJwt, {
-  secret: process.env.JWT_SECRET || 'supersecret', // usa variable de entorno en producción
+  secret: process.env.JWT_SECRET || 'supersecret',
 });
 
-//decorator authenticate
-fastify.decorate("authenticate", async (request: { jwtVerify: () => any; }, reply: { send: (arg0: unknown) => void; }) => {
-  try {
-    await request.jwtVerify();
-  } catch (err) {
-    reply.send(err);
-  }
-});
+// Registrar rutas
+fastify.register(authRoutes, { prefix: '/api' });
+fastify.register(adminRoutes, { prefix:'/api' });
+fastify.register(businessRoutes, { prefix: '/api' });
 
 
-
-// Registrar todas las rutas
-fastify.register(routes);
-
-// Arrancar el servidor
 fastify.listen({ port: 3003 }, (err, address) => {
   if (err) {
     fastify.log.error(err);
