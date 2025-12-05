@@ -1,11 +1,11 @@
 import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import { requireRole, RequestWithAuth } from '../middleware/roleGuard';
-import { AuthUser } from '../utils/jwt';
+import { requireRole, RequestWithAuth } from '../middleware/roleGuard.js';
+import { AuthUser } from '../utils/jwt.js';
 
 const paymentSchema = z.object({
   amount: z.number().positive(),
-  currency: z.enum(['ARS', 'USD', 'BRL']),
+  currency: z.enum(['MXN', 'USD']),
   provider: z.enum(['stripe', 'mercadopago', 'todopago']),
   description: z.string().min(1),
 });

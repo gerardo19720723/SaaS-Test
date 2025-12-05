@@ -1,4 +1,3 @@
-// backend/src/routes/index.ts  (limpio)
 import { FastifyInstance } from 'fastify';
 import { authRoutes } from './auth.js';
 import { paymentRoutes } from './payments.js';
@@ -6,19 +5,21 @@ import { registerOwnerRoutes } from './register-owner.js';
 import { adminOwnersRoutes } from './admin-owners.js';
 
 export async function routes(fastify: FastifyInstance) {
-  // Rutas públicas (sin JWT)
-  await fastify.register(authRoutes,   { prefix: '/auth' });
-  await fastify.register(registerOwnerRoutes, { prefix: '/owner' });
-  fastify.get('/admin/health', async (request, reply) => {
+  // Rutas públicas
+  await fastify.register(authRoutes, { prefix: '/api' });
+  await fastify.register(registerOwnerRoutes, { prefix: '/api' });
+
+  fastify.get('/api/health', async () => {
     return { status: 'ok', timestamp: new Date().toISOString() };
   });
 
   // Rutas protegidas (con JWT)
   fastify.register(async function (fastify) {
     fastify.addHook('preHandler', async (request, reply) => {
-      // tu hook JWT
+      // Aquí va tu validación JWT
     });
-    await fastify.register(adminOwnersRoutes);        // → /admin/owners
-    await fastify.register(paymentRoutes, { prefix: '/payments' });
+
+    await fastify.register(adminOwnersRoutes, { prefix: '/api/admin' });
+    await fastify.register(paymentRoutes, { prefix: '/api/payments' });
   });
 }

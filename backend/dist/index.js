@@ -54,16 +54,22 @@ async function registerRoutes() {
 }
 // ✅ FUNCION PRINCIPAL
 async function main() {
+    const port = parseInt(process.env.PORT || '3000');
     try {
         await registerPlugins();
         await registerRoutes();
-        const port = parseInt(process.env.PORT || '3000');
         await fastify.listen({ port, host: '0.0.0.0' });
         console.log(`🚀 Servidor ejecutándose en http://localhost:${port}`);
     }
     catch (err) {
-        console.error('Error al iniciar el servidor:', err);
+        if (err.code === 'EADDRINUSE') {
+            console.error(`❌ El puerto ${port} ya está en uso. Cambia PORT en tu .env.`);
+        }
+        else {
+            console.error('Error al iniciar el servidor:', err);
+        }
         process.exit(1);
     }
 }
-main();
+main(); // Wed Dec  3 13:06:35 CST 2025
+// Wed Dec  3 13:19:06 CST 2025

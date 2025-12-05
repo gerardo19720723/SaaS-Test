@@ -1,44 +1,54 @@
 import { FastifyInstance } from 'fastify';
-import { z } from 'zod';
-import { db } from '../drizzle/db';
-import { owners } from '../drizzle/schema';
+import { db } from '../drizzle/db.js';
+import { owners } from '../drizzle/schema-multi-level.js';
 import { eq } from 'drizzle-orm';
-import bcrypt from 'bcrypt';
-import { requireRole } from '../middleware/roleGuard';
-
-const createSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-  name: z.string().min(2),
-  phone: z.string().optional(),
-});
 
 export async function adminOwnersRoutes(fastify: FastifyInstance) {
-  fastify.addHook('preHandler', requireRole(['owner', 'admin_bar']));
-
-  // LISTAR owners
-  fastify.get('/admin/owners', async (req, reply) => {
-    const list = await db.select().from(owners);
-    return list;
+  // Listar todos los owners
+  fastify.get('/admin/owners', async (_req, reply) => {
+    try {
+      const allOwners = await db.select().from(owners);
+      fastify.log.info({ count: allOwners.length }, 'Owners listados');
+      return allOwners;
+    } catch (e) {
+      fastify.log.error(e, 'Error al listar owners');
+      return reply.code(500).send({ error: 'Error al listar owners' });
+    }
   });
 
-  // CREAR owner
-  fastify.post('/admin/owners', async (req, reply) => {
-    const { email, password, name, phone } = createSchema.parse(req.body);
-    const [exists] = await db.select().from(owners).where(eq(owners.email, email));
-    if (exists) return reply.code(409).send({ error: 'Email ya existe' });
+  // Obtener un owner por ID
+  fastify.get('/admin/owners/:id', async (request, reply) => {
+    try {
+      const { id } = request.params as { id: string };
+      const [owner] = await db.select().from(owners).where(eq(owners.id, id));
 
-    const hashed = await bcrypt.hash(password, 12);
-    const [row] = await db.insert(owners).values({
-      email, password: hashed, name, phone: phone ?? null, status: 'active',
-    }).returning();
-    return { message: 'Owner creado', owner: row };
+      if (!owner) {
+        return reply.code(404).send({ error: 'Owner no encontrado' });
+      }
+
+      fastify.log.info({ owner }, 'Owner encontrado');
+      return owner;
+    } catch (e) {
+      fastify.log.error(e, 'Error al obtener owner');
+      return reply.code(500).send({ error: 'Error al obtener owner' });
+    }
   });
 
-  // BORRAR owner
-  fastify.delete('/admin/owners/:id', async (req, reply) => {
-    const { id } = req.params as { id:string };
-    await db.delete(owners).where(eq(owners.id, id));
-    return { message: 'Owner eliminado' };
+  // Eliminar un owner por ID
+  fastify.delete('/admin/owners/:id', async (request, reply) => {
+    try {
+      const { id } = request.params as { id: string };
+      const deleted = await db.delete(owners).where(eq(owners.id, id)).returning();
+
+      if (deleted.length === 0) {
+        return reply.code(404).send({ error: 'Owner no encontrado' });
+      }
+
+      fastify.log.info({ deleted }, 'Owner eliminado');
+      return { message: 'Owner eliminado exitosamente', owner: deleted[0] };
+    } catch (e) {
+      fastify.log.error(e, 'Error al eliminar owner');
+      return reply.code(500).send({ error: 'Error al eliminar owner' });
+    }
   });
 }

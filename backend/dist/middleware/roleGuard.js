@@ -1,4 +1,4 @@
-import { verifyJWT } from '../utils/jwt';
+import { verifyJWT } from '../utils/jwt.js';
 export function requireRole(allowed) {
     return async (req, reply) => {
         const hdr = req.headers.authorization;

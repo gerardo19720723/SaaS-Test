@@ -6,8 +6,6 @@ import jwt from '@fastify/jwt';
 import cookie from '@fastify/cookie';
 import dotenv from 'dotenv';
 import { routes } from './routes/index.js';
-import { logger } from './utils/logger.js';
-import { adminOwnersRoutes } from './routes/admin-owners.js';
 
 dotenv.config();
 
@@ -64,17 +62,23 @@ async function registerRoutes() {
 
 // ✅ FUNCION PRINCIPAL
 async function main() {
+  const port = parseInt(process.env.PORT || '3000');
   try {
     await registerPlugins();
     await registerRoutes();
     
-    const port = parseInt(process.env.PORT || '3000');
+    
     await fastify.listen({ port, host: '0.0.0.0' });
     console.log(`🚀 Servidor ejecutándose en http://localhost:${port}`);
-  } catch (err) {
+  } catch (err: any) {
+    if (err.code === 'EADDRINUSE') {
+    console.error(`❌ El puerto ${port} ya está en uso. Cambia PORT en tu .env.`);
+  } else {
     console.error('Error al iniciar el servidor:', err);
-    process.exit(1);
+    
   }
+  process.exit(1);
+}
 }
 
 main();// Wed Dec  3 13:06:35 CST 2025

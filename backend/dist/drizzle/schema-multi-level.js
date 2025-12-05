@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, integer, text, numeric, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, timestamp, integer, numeric } from 'drizzle-orm/pg-core';
 export const owners = pgTable('owners', {
     id: uuid('id').primaryKey().defaultRandom(),
     email: varchar('email', { length: 255 }).notNull().unique(),

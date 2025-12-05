@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { verifyJWT, AuthUser } from '../utils/jwt';
+import { verifyJWT, AuthUser } from '../utils/jwt.js';
 
 /*  NO hacemos declare module 'fastify'  */
 

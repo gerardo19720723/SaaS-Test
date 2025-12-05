@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { requireRole } from '../middleware/roleGuard';
+import { requireRole } from '../middleware/roleGuard.js';
 const paymentSchema = z.object({
     amount: z.number().positive(),
-    currency: z.enum(['ARS', 'USD', 'BRL']),
+    currency: z.enum(['MXN', 'USD']),
     provider: z.enum(['stripe', 'mercadopago', 'todopago']),
     description: z.string().min(1),
 });
